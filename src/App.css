@@ -1,0 +1,11 @@
+.light, .light *{
+  background: gainsboro;
+  color: black;
+  font-family: serif;
+}
+
+.dark, .dark *{
+  background-color: darkslategrey;
+  color: lightgray;
+}
+
