@@ -13,7 +13,7 @@ function App() {
       console.log('working else')
       setTheme('light');}
   };
-  useEffect (()=> {document.body.className = theme}, [theme]);
+  useEffect (()=> { document.body.classList.remove='light'; document.body.className = theme;}, [theme]);
 
   return (
     <div id="body" className="light w-screen h-full mt-12">

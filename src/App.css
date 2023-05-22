@@ -1,4 +1,4 @@
-.light, .light *{
+.light, .light *, .light input{
   background: gainsboro;
   color: black;
   font-family: serif;
