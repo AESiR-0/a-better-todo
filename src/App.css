@@ -1,17 +1,23 @@
-.light, .light *, .light input{
+.light, .light *{
   background: gainsboro;
   color: black;
   font-family: serif;
 }
+
+.light input{
+  background-color: rgb(152, 149, 149);
+  color: rgb(4, 4, 4);
+}
+
 
 .dark, .dark *{
   background-color: darkslategrey;
   color: lightgray;
 }
 
-
-tr{
-  margin: 10px;
+.dark input{
+  background-color:slategray;
+  color: whitesmoke;
 }
 
 .display h1{
@@ -20,4 +26,8 @@ tr{
   margin-left: 90%;
 }
 
-  
+.list:has(.done:checked) h2{
+  text-decoration: line-through;
+  opacity: 0.2;
+  color: rgb(20, 18, 15);
+}

@@ -5,15 +5,7 @@ function InputBox() {
   const inputTitle = useRef("");
   const inputDescription = useRef("");
   const [data, setData] = useState([]);
-  const checkBox = document.getElementById('status');
-  const deev = document.getElementById('strik');
-  const Strike = () => {
-    if (checkBox.checked == true){
-      deev.style.textDecoration = 'line-through'
-    } else {
-      deev.style.textDecoration = 'none'
-        }
-  }
+
 
   return (
     <>
@@ -48,7 +40,7 @@ function InputBox() {
           <FaPlus></FaPlus>
         </button>
       </div>
-      <div className="display translate-y-80 relative left-80  border-solid w-fit flex">
+      <div className="display  top-80 relative left-[340px] w-fit  border-solid flex">
         <h1>Status</h1>
         <h1>Title</h1>
         <h1>Description</h1>
@@ -57,10 +49,10 @@ function InputBox() {
         <div id="strike">
       {data && data.length>0 ? data.map((value, index)=>{
             return(
-              <div className="w-fit translate-x-40 py-4 translate-y-96 flex" key={index}>
-              <input className="mx-10 translate-x-80" type="checkbox" onChange={Strike}  name="Status" id="status" />    
+              <div className="w-fit list  translate-x-40 py-4 translate-y-[340px] flex " key={index}>
+              <input className="mx-10 translate-x-80 done" type="checkbox"   name="Status" id="status" />    
               <h2  className="title mx-36 translate-x-80">{value.title}</h2>
-              <h6  className="desc mx-28 translate-x-80">{value.description}</h6>
+              <h2  className="desc mx-28 translate-x-80">{value.description}</h2>
             
               
               </div>
