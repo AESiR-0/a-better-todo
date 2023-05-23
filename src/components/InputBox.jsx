@@ -5,11 +5,60 @@ function InputBox() {
   const inputTitle = useRef("");
   const inputDescription = useRef("");
   const [data, setData] = useState([]);
+  if (!window.indexedDB) {
+    console.log(`Your browser doesn't support IndexedDB`);
+    return;
+  }
+  const request = indexedDB.open("CRM", 1);
+  request.onerror = (event) => {
+    console.error(`Database error: ${event.target.errorCode}`);
+  };
 
+  request.onsuccess = () => {
+    // add implementation here
+    console.log("Database opened successfully");
+  };
+
+  // create the Contacts object store and indexes
+  request.onupgradeneeded = (event) => {
+    var db = event.target.result;
+
+    // create the Contacts object store
+    // with auto-increment id
+    db.createObjectStore("ToDo", {
+      autoIncrement: true,
+    });
+  };
+
+  function insertValue(db, value) {
+    // create a new transaction
+    const txn = db.transaction("ToDo", "readwrite");
+
+    // get the Contacts object store
+    const store = txn.objectStore("ToDo");
+    //
+    let query = store.put(value);
+
+    // handle success case
+    query.onsuccess = function (event) {
+      console.log(event);
+    };
+
+    // handle the error case
+    query.onerror = function (event) {
+      console.log(event.target.errorCode);
+    };
+
+    // close the database once the
+    // transaction completes
+    txn.oncomplete = function () {
+      db.close();
+    };
+  }
 
   return (
     <>
-      <div className="input translate-y-56 flex justify-center items-center   ">
+      <div className="input focus:border-1 focus:border-gray-700 translate-y-56 flex justify-center items-center   ">
         <input
           type="text"
           className="bg-black mx-2 px-2"
