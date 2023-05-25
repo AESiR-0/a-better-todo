@@ -9,7 +9,7 @@ function InputBox() {
     console.log(`Your browser doesn't support IndexedDB`);
     return;
   }
-  const request = indexedDB.open("CRM", 1);
+  const request = indexedDB.open("ToDo", 1);
   request.onerror = (event) => {
     console.error(`Database error: ${event.target.errorCode}`);
   };
@@ -18,11 +18,11 @@ function InputBox() {
     // add implementation here
     console.log("Database opened successfully");
   };
-
+  var qt;
   // create the Contacts object store and indexes
   request.onupgradeneeded = (event) => {
     var db = event.target.result;
-
+    qt=db;
     // create the Contacts object store
     // with auto-increment id
     db.createObjectStore("ToDo", {
@@ -30,8 +30,9 @@ function InputBox() {
     });
   };
 
-  function insertValue(db, value) {
+  function insertValue(db=qt, value) {
     // create a new transaction
+    // eslint-disable-next-line no-undef
     const txn = db.transaction("ToDo", "readwrite");
 
     // get the Contacts object store
@@ -56,6 +57,26 @@ function InputBox() {
     };
   }
 
+  function getAllTodo(db=qt) {
+    
+    const txn = db.transaction('ToDo', "readonly");
+    const objectStore = txn.objectStore('ToDo');
+
+    objectStore.openCursor().onsuccess = (event) => {
+        let cursor = event.target.result;
+        if (cursor) {
+            let Todo = cursor.value;
+            console.log(Todo);
+            // continue next record
+            cursor.continue();
+        }
+    };
+    // close the database connection
+    txn.oncomplete = function () {
+        db.close();
+    };
+}
+
   return (
     <>
       <div className="input focus:border-1 focus:border-gray-700 translate-y-56 flex justify-center items-center   ">
@@ -74,6 +95,7 @@ function InputBox() {
         <button
           onClick={(e) => {
             e.preventDefault();
+            let tempData = {title: inputTitle.current.value, description: inputDescription.current.value};
             setData([
               ...data,
               {
@@ -83,6 +105,9 @@ function InputBox() {
             ]);
             inputTitle.current.value = '',
             inputDescription.current.value = ''
+            insertValue(tempData);
+            getAllTodo();
+          
           }}
           id="add-task"
         >
@@ -95,6 +120,7 @@ function InputBox() {
         <h1>Description</h1>
         <br />
         </div>
+        
         <div id="strike">
       {data && data.length>0 ? data.map((value, index)=>{
             return(
