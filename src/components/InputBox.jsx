@@ -1,80 +1,24 @@
 import { useRef, useState } from "react";
 import { FaPlus } from "react-icons/fa";
+import Localbase from 'localbase'
+
+
 
 function InputBox() {
   const inputTitle = useRef("");
   const inputDescription = useRef("");
   const [data, setData] = useState([]);
-  if (!window.indexedDB) {
-    console.log(`Your browser doesn't support IndexedDB`);
-    return;
-  }
-  const request = indexedDB.open("ToDo", 1);
-  request.onerror = (event) => {
-    console.error(`Database error: ${event.target.errorCode}`);
-  };
+  let db = new Localbase('ToDo')  
 
-  request.onsuccess = () => {
-    // add implementation here
-    console.log("Database opened successfully");
-  };
-  var qt;
-  // create the Contacts object store and indexes
-  request.onupgradeneeded = (event) => {
-    var db = event.target.result;
-    qt=db;
-    // create the Contacts object store
-    // with auto-increment id
-    db.createObjectStore("ToDo", {
-      autoIncrement: true,
-    });
-  };
+  function insertValue(value) {
+    db.collection('todos').add(value)
+  
+}
 
-  function insertValue(db=qt, value) {
-    // create a new transaction
-    // eslint-disable-next-line no-undef
-    const txn = db.transaction("ToDo", "readwrite");
-
-    // get the Contacts object store
-    const store = txn.objectStore("ToDo");
-    //
-    let query = store.put(value);
-
-    // handle success case
-    query.onsuccess = function (event) {
-      console.log(event);
-    };
-
-    // handle the error case
-    query.onerror = function (event) {
-      console.log(event.target.errorCode);
-    };
-
-    // close the database once the
-    // transaction completes
-    txn.oncomplete = function () {
-      db.close();
-    };
-  }
-
-  function getAllTodo(db=qt) {
-    
-    const txn = db.transaction('ToDo', "readonly");
-    const objectStore = txn.objectStore('ToDo');
-
-    objectStore.openCursor().onsuccess = (event) => {
-        let cursor = event.target.result;
-        if (cursor) {
-            let Todo = cursor.value;
-            console.log(Todo);
-            // continue next record
-            cursor.continue();
-        }
-    };
-    // close the database connection
-    txn.oncomplete = function () {
-        db.close();
-    };
+const getTodos = () => {
+  db.collection('todos').get().then(todos => {
+    setData(todos)
+  })
 }
 
   return (
@@ -106,7 +50,7 @@ function InputBox() {
             inputTitle.current.value = '',
             inputDescription.current.value = ''
             insertValue(tempData);
-            getAllTodo();
+            
           
           }}
           id="add-task"
@@ -122,6 +66,7 @@ function InputBox() {
         </div>
         
         <div id="strike">
+          {getTodos()}
       {data && data.length>0 ? data.map((value, index)=>{
             return(
               <div className="w-fit list  translate-x-40 py-4 translate-y-[340px] flex " key={index}>
